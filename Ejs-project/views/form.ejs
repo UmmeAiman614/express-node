@@ -1,0 +1,20 @@
+<%- include ('header') -%>
+        <div class="row mb-6">
+            <div class="col-6 mb-6">
+                <form action="/submit" method="POST">
+                    Enter your name: <input type="text" name="name" class="form-control" placeholder="Enter your name">
+                    <br>
+                    <input type="submit">
+                </form>
+            </div>
+            <div class="col-6 w-20px">
+                <!-- <img src="flower-image.jpg" alt=""> -->
+            </div>
+            
+        </div>
+        <div class="row my-3">
+            <div class="col bg-success-subtle">
+                <%= message %>
+            </div>
+        </div>
+<%- include ('footer') -%>

@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title%>
-    </title>
-</head>
-
-<body>
+<%- include ('header') -%>
     <h1>
         <%= title%>
     </h1>
@@ -31,15 +20,37 @@
                             <%# }) %>
                     </ul>
 
-                    <table border="1" width="500px">
-                        <% items.forEach(item => { %>
+                    <!-- <table border="1" width="500px">
+                        <%# items.forEach(item => { %>
                             <tr>
-                                <td><%= item.name %></td>
-                                <td><%= item.age %></td>
-                                <td><%= item.city %></td>
+                                <td><%#= item.name %></td>
+                                <td><%#= item.age %></td>
+                                <td><%#= item.city %></td>
+                            </tr>
+                            <%# }) %>
+                    </table> -->
+
+
+
+
+                    <table class="table table-striped">
+                        <% items.forEach(item=> { %>
+                            <tr>
+                                <td>
+                                    <%= item.name %>
+                                </td>
+                                <td>
+                                    <%= item.age %>
+                                </td>
+                                <td>
+                                    <%= item.city %>
+                                </td>
                             </tr>
                             <% }) %>
                     </table>
-</body>
-
-</html>
+                    <div class="row my-3">
+                        <div class="col bg-success-subtle">
+                            <%= message %>
+                        </div>
+                    </div>
+                    <%- include ('footer') -%>
