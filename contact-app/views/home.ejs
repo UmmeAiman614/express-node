@@ -27,27 +27,61 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% contacts.forEach(contact => { %>
-                    <tr>
-                      <td>1</td>
-                      <td><%= contact.first_name %></td>
-                      <td><%= contact.last_name %></td>
-                      <td><%= contact.email %></td>
-                      <td><%= contact.phone %></td>
-                      <td width="150">
-                        <a href="/show-contact/<%= contact._id %>" class="btn btn-sm btn-circle btn-outline-info" title="Show"><i
-                            class="fa fa-eye"></i></a>
-                        <a href="/update-contact/<%= contact._id %>" class="btn btn-sm btn-circle btn-outline-secondary" title="Edit"><i
-                            class="fa fa-edit"></i></a>
-                        <a href="/delete-contact/<%= contact._id %>" class="btn btn-sm btn-circle btn-outline-danger" title="Delete"
-                         ><i class="fa fa-times"></i></a>
-                      </td>
-                    </tr>
-                    <% }) %>
+                  <% var id=counter %>
+                    <% contacts.forEach(contact=> { %>
+                      <tr>
+                        <td>
+                          <%= id++ %>
+                        </td>
+                        <td>
+                          <%= contact.first_name %>
+                        </td>
+                        <td>
+                          <%= contact.last_name %>
+                        </td>
+                        <td>
+                          <%= contact.email %>
+                        </td>
+                        <td>
+                          <%= contact.phone %>
+                        </td>
+                        <td width="150">
+                          <a href="/show-contact/<%= contact._id %>" class="btn btn-sm btn-circle btn-outline-info"
+                            title="Show"><i class="fa fa-eye"></i></a>
+                          <a href="/update-contact/<%= contact._id %>"
+                            class="btn btn-sm btn-circle btn-outline-secondary" title="Edit"><i
+                              class="fa fa-edit"></i></a>
+                          <a href="/delete-contact/<%= contact._id %>" class="btn btn-sm btn-circle btn-outline-danger"
+                            title="Delete"><i class="fa fa-times"></i></a>
+                        </td>
+                      </tr>
+                      <% }) %>
 
 
                 </tbody>
               </table>
+
+              <nav>
+                <ul class="pagination justify-content-center">
+                  <% let disableClass = hasPrevPage ? "" : "disabled" %>
+
+                    <li class="page-item <%= disableClass %>">
+                      <a class="page-link" href="/?page=<%= prevPage %>">Previous</a>
+                    </li>
+                    <% for(let i=1; i<=totalPages; i++){ 
+                      let activeClass = currentPage == i ? "active": ""
+                      %>
+                      <li class="page-item <%= activeClass %>"><a class="page-link" href="/?page=<%= i %>">
+                          <%= i %>
+                        </a></li>
+                      <% } %>
+
+                      <% let disableClass2 = hasNextPage ? "" : "disabled" %>
+                        <li class="page-item <%= disableClass2 %>">
+                          <a class="page-link" href="/?page=<%= nextPage %>">Next</a>
+                        </li>
+                </ul>
+              </nav>
             </div>
           </div>
         </div>
