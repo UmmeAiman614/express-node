@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .header-gradient {
+      background: linear-gradient(90deg, #ff6a00, #ee0979);
+      color: white;
+    }
+
+    .search-bar {
+      background-color: #ffffff;
+      border: 1px solid #ced4da;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+  <div class="container mt-4">
+    <!-- Header -->
+    <div class="text-center p-4 mb-4 rounded header-gradient shadow">
+      <h1 class="fw-bold mb-1">📋 Student Form</h1>
+      <p class="mb-0 fs-5">Manage student records – add, edit, view, or delete entries easily</p>
+    </div>
+
+    <!-- Top Controls -->
+    <div class="row align-items-center mb-3 g-2">
+      <div class="col-12 col-md-6">
+        <input type="text" id="searchInput" class="form-control search-bar" placeholder="🔍 Search by name..." />
+      </div>
+      <div class="col-12 col-md-6 text-md-end text-center">
+        <button class="btn btn-success me-2 mb-1 mb-md-0" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add
+          Student</button>
+        <button class="btn btn-secondary mb-1 mb-md-0" onclick="fetchStudents()">Refresh</button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered bg-white">
+        <thead class="table-dark">
+          <tr>
+            <th>Profile</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Gender</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- View Modal -->
+  <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">View Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <img id="viewProfilePic" class="rounded mb-3" width="100">
+          <p><strong>Full Name:</strong> <span id="viewName"></span> </p>
+          <p><strong>Email:</strong><span id="viewEmail"></span></p>
+          <p><strong>Phone:</strong><span id="viewPhone"></span></p>
+          <p><strong>Gender:</strong><span id="viewGender"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content" id="editStudentForm" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editStudentId" name="id" />
+          <div class="mb-2">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-control" id="editFname" name="first_name" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="editLname" name="last_name" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" id="editEmail" name="email" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-control" id="editPhone" name="phone" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Gender</label>
+            <select class="form-select" id="editGender" name="gender">
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Upload new profile picture:</label>
+            <input type="file" class="form-control" id="editProfilePic" name="profile_pic" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Add Student Modal -->
+  <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content" id="addStudentForm" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label class="form-label">Profile Picture</label>
+            <input type="file" class="form-control" name="profile_pic" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-control" name="first_name" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-control" name="last_name" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-control" name="phone" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Gender</label>
+            <select class="form-select" name="gender">
+              <option selected disabled>Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Add Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <script>
+    const apiURL = 'http://localhost:3000/api/students';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchStudents();
+    });
+
+    // view all students
+    async function fetchStudents(search = '') {
+      try {
+        const res = await fetch(`${apiURL}?search=${encodeURIComponent(search)}`);
+        const data = await res.json();
+
+        const tbody = document.querySelector('#studentTableBody');
+        tbody.innerHTML = '';
+
+        data.forEach(student => {
+          tbody.innerHTML += `
+          <tr>
+            <td><img src="http://localhost:3000/uploads/${student.profile_pic}" width="50" height = 50 class="rounded-circle"></td>
+            <td>${student.first_name}</td>
+            <td>${student.last_name}</td>
+            <td>${student.email}</td>
+            <td>${student.phone}</td>
+            <td>${student.gender}</td>
+            <td>
+              <button class="btn btn-info btn-sm me-1 mb-1" data-bs-toggle="modal" data-bs-target="#viewModal" onclick="viewStudent('${student._id}')">View</button>
+              <button class="btn btn-warning btn-sm me-1 mb-1" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editStudent('${student._id}')">Edit</button>
+              <button class="btn btn-danger btn-sm mb-1" onclick="deleteStudent('${student._id}')">Delete</button>
+            </td>
+          </tr>
+        `;
+        });
+      } catch (err) {
+        console.error('Failed to fetch students:', err);
+      }
+    }
+
+
+    // view single student record
+    async function viewStudent(id) {
+      try {
+        const res = await fetch(`${apiURL}/${id}`);
+        const data = await res.json();
+
+        // Populate modal
+        document.querySelector("#viewProfilePic").src = `http://localhost:3000/uploads/${data.profile_pic}`;
+        document.querySelector("#viewName").textContent = `${data.first_name} ${data.last_name}`;
+        document.querySelector("#viewEmail").textContent = data.email;
+        document.querySelector("#viewPhone").textContent = data.phone;
+        document.querySelector("#viewGender").textContent = data.gender;
+
+      } catch (error) {
+        console.error("Failed to view student:", error);
+      }
+    }
+
+    // Edit student
+
+    let currentEditId = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const editForm = document.querySelector('#editStudentForm');
+
+      editForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        if (!currentEditId) {
+          alert("No student selected to edit.");
+          return;
+        }
+
+        const formData = new FormData(editForm);
+
+        try {
+          const res = await fetch(`${apiURL}/${currentEditId}`, {
+            method: 'PUT',
+            body: formData,
+          });
+
+          if (res.ok) {
+            // Success
+            editForm.reset();
+            currentEditId = null;
+            bootstrap.Modal.getInstance(document.querySelector('#editModal')).hide();
+            fetchStudents(); // reload student list
+          } else {
+            const errData = await res.json();
+            alert(`Error updating student: ${errData.message || 'Unknown error'}`);
+          }
+        } catch (err) {
+          console.error("Update error:", err);
+          alert("Server error.");
+        }
+      });
+
+      // Clear form and ID when modal closes
+      document.querySelector('#editModal').addEventListener('hidden.bs.modal', () => {
+        editForm.reset();
+        currentEditId = null;
+      });
+    });
+
+    async function editStudent(id) {
+      try {
+        const res = await fetch(`${apiURL}/${id}`);
+        const student = await res.json();
+
+        currentEditId = student._id;
+
+        // Fill form fields
+        document.querySelector('#editStudentId').value = student._id;
+        document.querySelector('#editFname').value = student.first_name;
+        document.querySelector('#editLname').value = student.last_name;
+        document.querySelector('#editEmail').value = student.email;
+        document.querySelector('#editPhone').value = student.phone;
+        document.querySelector('#editGender').value = student.gender;
+
+        // Reset file input (optional)
+        document.querySelector('#editProfilePic').value = '';
+
+        // Show modal
+        const modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#editModal'));
+        modal.show();
+      } catch (err) {
+        console.error("Failed to fetch student for edit:", err);
+        alert("Failed to load student.");
+      }
+    }
+
+
+
+    // delete student
+
+    async function deleteStudent(id) {
+      if (confirm('Are you sure to delete this student data?')) {
+        await fetch(`${apiURL}/${id}`, { method: 'DELETE' })
+        fetchStudents()
+      }
+    }
+
+
+    // searchh a student
+    document.querySelector('#searchInput').addEventListener('input', () => {
+      fetchStudents(document.querySelector('#searchInput').value)
+    })
+
+
+    // Add a new student
+    document.querySelector('#addStudentForm').addEventListener('submit', async function (e) {
+      e.preventDefault()
+
+      const formData = new FormData(this)
+      const res = await fetch(apiURL, {
+        method: 'POST',
+        body: formData
+      })
+      if (res.ok) {
+        this.reset()
+        bootstrap.Modal.getInstance(document.querySelector('#addStudentModal')).hide()
+        fetchStudents()
+      } else {
+        alert('Error creating student')
+      }
+
+    })
+
+
+
+
+
+
+
+  </script>
+
+
+
+</body>
+
+</html>
