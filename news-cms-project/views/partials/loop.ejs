@@ -1,0 +1,59 @@
+ 
+ <% news = paginatedNews.data %>
+ <% news.forEach(function(article){ %>
+              <div class="post-content">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <a class="post-img" href="single/<%= article._id %>"><img src="/uploads/<%= article.image %>" alt=""/></a>
+                    </div>
+                    <div class="col-md-8">
+                      <div class="inner-content clearfix">
+                          <h3><a href='single/<%= article._id %>'><%= article.title %></a></h3>
+                          <div class="post-information">
+                              <span>
+                                  <i class="fa fa-tags" aria-hidden="true"></i>
+                                  <a href='/category/<%= article.category.slug %>'><%= article.category.name %></a>
+                              </span>
+                              <span>
+                                  <i class="fa fa-user" aria-hidden="true"></i>
+                                  <a href='/author/<%= article.author._id %>'><%= article.author.fullname %></a>
+                              </span>
+                              <span>
+                                  <i class="fa fa-calendar" aria-hidden="true"></i>
+                                  <% var date = new Date(article.createdAt); %>
+                          <%= date.toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+                              </span>
+                          </div>
+                          <p class="description">
+                              <%= article.content.substring(0,30) + '...' %>
+                          </p>
+                          <a class='read-more pull-right' href='single/<%= article._id %>'>read more</a>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <% }) %>
+              <% 
+              function buildQuery(query, pagge){
+                const params = new URLSearchParams(query);
+                params.set('page', pagge);
+                return '?' + params.toString();
+
+              }
+              %>
+              <nav>
+                <ul class="pagination">
+                  <li class="page-item <%= paginatedNews.hasPrevPage ? '' : 'disabled' %>">
+                    <a class="page-link" href="<%= buildQuery(query, paginatedNews.prevPage) %>">Previous</a>
+                  </li>
+                  <% for(let i=1; i<=paginatedNews.totalPages; i++){ 
+                    let activeClass = paginatedNews.currentPage == i ? "active": ""
+                  %>
+                    <li class="page-item <%= activeClass %>"><a class="page-link" href="<%= buildQuery(query, i) %>"><%= i %></a></li>
+                  <% } %>
+                  <li class="page-item <%= paginatedNews.hasNextPage ? '' : 'disabled' %>">
+                    <a class="page-link" href="<%= buildQuery(query, paginatedNews.nextPage) %>">Next</a>
+                  </li>
+                </ul>
+              </nav>
+
